@@ -10,9 +10,16 @@ body {
 }
 
 header {
-    margin: 20px 0;
+    margin: 0;
+	margin-bottom: 30px;
+    text-align: center;
+    padding: 10px;
     font-size: 24px;
     font-weight: bold;
+    background-color: #333;
+    color: white;
+    top: 0;
+    width: 100%;
 }
 
 #dropBox {
@@ -49,7 +56,6 @@ header {
     color: #4caf50;
 }
 
-#getLocationBtn,
 #uploadBtn {
     padding: 10px;
     margin: 10px;
@@ -62,7 +68,6 @@ header {
     transition: background-color 0.3s ease;
 }
 
-#getLocationBtn:hover,
 #uploadBtn:hover {
     background-color: #45a049;
 }

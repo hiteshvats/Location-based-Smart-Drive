@@ -6,10 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewImage = document.getElementById('previewImage');
 
     let currentCity = '';
-
-    getLocationBtn.addEventListener('click', () => {
-        getLocationAndSetCity();
-    });
+    getLocationAndSetCity();
 
     uploadBtn.addEventListener('click', () => {
         if (!currentCity) {
