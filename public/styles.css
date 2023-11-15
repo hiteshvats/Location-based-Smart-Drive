@@ -1,65 +1,79 @@
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #f4f4f4;
 }
 
-.container {
-    text-align: center;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+header {
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-h1 {
-    color: #333;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-top: 10px;
+#dropBox {
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    margin: 20px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: border 0.3s ease;
 }
 
-input[type="file"] {
+#dropBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: none;
 }
 
-.custom-file-upload {
-    display: inline-block;
-    padding: 10px 20px;
+#dropBox label {
+    text-align: center;
     font-size: 16px;
-    margin-top: 10px;
+    color: #777;
     cursor: pointer;
-    background-color: #2196F3;
-    color: white;
+    transition: color 0.3s ease;
+}
+
+#dropBox:hover label {
+    color: #4caf50;
+}
+
+#getLocationBtn,
+#uploadBtn {
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
     border: none;
+    background-color: #4caf50;
+    color: white;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-#file-chosen {
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 150px;
+#getLocationBtn:hover,
+#uploadBtn:hover {
+    background-color: #45a049;
 }
 
-#file-chosen::before {
-    content: 'Choose Image';
-    display: block;
-}
-
-.custom-file-upload input[type="file"]:focus + #file-chosen::before {
-    content: 'Change Image';
+footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }

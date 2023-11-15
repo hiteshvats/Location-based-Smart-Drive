@@ -2,8 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const getLocationBtn = document.getElementById('getLocationBtn');
     const imageInput = document.getElementById('imageInput');
     const uploadBtn = document.getElementById('uploadBtn');
+    const dropBox = document.getElementById('dropBox');
+    const previewImage = document.getElementById('previewImage');
 
-    let currentCity = ''; // edited Store the current city for image upload
+    let currentCity = ''; // Store the current city for image upload
 
     getLocationBtn.addEventListener('click', () => {
         getLocationAndSetCity();
@@ -15,6 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         uploadImage();
+    });
+
+    dropBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropBox.style.border = '2px solid #4caf50';
+    });
+
+    dropBox.addEventListener('dragleave', () => {
+        dropBox.style.border = '2px dashed #ccc';
+    });
+
+    dropBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropBox.style.border = '2px dashed #ccc';
+        handleDrop(e.dataTransfer.files);
+    });
+
+    imageInput.addEventListener('change', (e) => {
+        handleDrop(e.target.files);
     });
 
     function getLocationAndSetCity() {
@@ -36,22 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function reverseGeocode(latitude, longitude) {
         // Perform reverse geocoding to get the city name based on the coordinates.
         // For simplicity, we'll use a placeholder "City".
-        const apiKey = 'AIzaSyAu7uQCkbV8pYN5chS-DXMuSsReWc1Btc8';
-
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ lat: latitude, lng: longitude }, (results, status) => {
-            if (status === 'OK') {
-            const city = results[0].address_components.find(component => component.types.includes('locality')).long_name;
-            currentCity = city;
-            alert(`Location set to: ${city}`);
-  } else {
-    console.error('Error geocoding:', status);
-  }
-});
-
-     //   const city = 'City';
-       // currentCity = city;
-        //alert(`Location set to: ${city}`);
+        const city = 'City';
+        currentCity = city;
+        alert(`Location set to: ${city}`);
     }
 
     function uploadImage() {
@@ -68,13 +76,25 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
-            alert(data.message);
-        })
-        .catch(error => {
-            console.error('Error uploading image:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+            });
+    }
+
+    function handleDrop(files) {
+        const file = files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
     }
 });
