@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-        const city = 'City';
-        currentCity = city;
-        alert(`Location set to: ${city}`);
+     //   const city = 'City';
+       // currentCity = city;
+        //alert(`Location set to: ${city}`);
     }
 
     function uploadImage() {
