@@ -12,24 +12,38 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        // Keep the original file name
-        cb(null, file.originalname);
+        // Use the current timestamp as the filename
+        const timestamp = Date.now();
+        const ext = path.extname(file.originalname);
+        const filename = `${timestamp}${ext}`;
+        cb(null, filename);
     },
 });
 
-// File filter to allow only image file types
+// File filter to allow only image file types and check for double extension
 const fileFilter = (req, file, cb) => {
     const allowedFileTypes = /jpeg|jpg|png|gif/;
     const ext = path.extname(file.originalname).toLowerCase();
     const isAllowed = allowedFileTypes.test(ext);
-    if (isAllowed) {
+    const hasDoubleExtension = path.basename(file.originalname).includes('.exe');
+
+    if (isAllowed && !hasDoubleExtension) {
         cb(null, true);
     } else {
-        cb(new Error('Only image files are allowed!'), false);
+        const error = hasDoubleExtension
+            ? 'Double extensions are not allowed!'
+            : 'Only image files are allowed!';
+        cb(new Error(error));
     }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+});
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
@@ -40,7 +54,7 @@ app.get('/', (req, res) => {
 });
 
 // Handle POST requests to '/uploadImage/:city'
-app.post('/uploadImage/:city', upload.single('image'), (req, res) => {
+app.post('/uploadImage/:city', (req, res) => {
     const city = req.params.city;
     const successMessage = `File uploaded successfully to ${city} folder.`;
     const errorMessage = 'Error uploading file.';
@@ -51,15 +65,28 @@ app.post('/uploadImage/:city', upload.single('image'), (req, res) => {
         fs.mkdirSync(cityFolderPath);
     }
 
-    // Move the uploaded file to the city folder
-    if (req.file) {
-        const newFilePath = path.join(cityFolderPath, req.file.originalname);
-        fs.renameSync(req.file.path, newFilePath);
-        console.log('File moved to:', newFilePath);
-        res.json({ message: successMessage });
-    } else {
-        console.error('Error uploading file.');
-        res.status(500).json({ message: errorMessage });
+    // Use try-catch to handle errors
+    try {
+        upload.single('image')(req, res, (err) => {
+            if (err) {
+                console.error('Error uploading file:', err.message);
+                return res.status(400).json({ message: err.message });
+            }
+
+            // Move the uploaded file to the city folder
+            if (req.file) {
+                const newFilePath = path.join(cityFolderPath, req.file.filename);
+                fs.renameSync(req.file.path, newFilePath);
+                console.log('File moved to:', newFilePath);
+                return res.json({ message: successMessage });
+            } else {
+                console.error('Error uploading file.');
+                return res.status(500).json({ message: errorMessage });
+            }
+        });
+    } catch (err) {
+        console.error('Unexpected error:', err.message);
+        return res.status(500).json({ message: errorMessage });
     }
 });
 
