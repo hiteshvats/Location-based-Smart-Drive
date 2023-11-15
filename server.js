@@ -17,7 +17,19 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage: storage });
+// File filter to allow only image file types
+const fileFilter = (req, file, cb) => {
+    const allowedFileTypes = /jpeg|jpg|png|gif/;
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isAllowed = allowedFileTypes.test(ext);
+    if (isAllowed) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
