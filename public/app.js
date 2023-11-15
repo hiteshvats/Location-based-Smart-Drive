@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageInput = document.getElementById('imageInput');
     const uploadBtn = document.getElementById('uploadBtn');
 
-    let currentCity = ''; // Store the current city for image upload
+    let currentCity = ''; // edited Store the current city for image upload
 
     getLocationBtn.addEventListener('click', () => {
         getLocationAndSetCity();
