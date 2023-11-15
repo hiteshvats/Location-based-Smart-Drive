@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -32,12 +33,17 @@ app.post('/uploadImage/:city', upload.single('image'), (req, res) => {
     const successMessage = `File uploaded successfully to ${city} folder.`;
     const errorMessage = 'Error uploading file.';
 
-    // Here you can handle the uploaded file and move it to the appropriate folder based on the city
-    // You might want to use the 'fs' module to manage files
+    // Check if the folder for the city exists, if not, create it
+    const cityFolderPath = path.join(__dirname, 'uploads', city);
+    if (!fs.existsSync(cityFolderPath)) {
+        fs.mkdirSync(cityFolderPath);
+    }
 
-    // For now, let's just log the file details
+    // Move the uploaded file to the city folder
     if (req.file) {
-        console.log('File details:', req.file);
+        const newFilePath = path.join(cityFolderPath, req.file.originalname);
+        fs.renameSync(req.file.path, newFilePath);
+        console.log('File moved to:', newFilePath);
         res.json({ message: successMessage });
     } else {
         console.error('Error uploading file.');
