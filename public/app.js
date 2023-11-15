@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropBox = document.getElementById('dropBox');
     const previewImage = document.getElementById('previewImage');
 
-    let currentCity = ''; // Store the current city for image upload
+    let currentCity = '';
 
     getLocationBtn.addEventListener('click', () => {
         getLocationAndSetCity();
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function getLocationAndSetCity() {
-        if ('geolocation' in navigator) {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
                     const { latitude, longitude } = position.coords;
@@ -55,11 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function reverseGeocode(latitude, longitude) {
-        // Perform reverse geocoding to get the city name based on the coordinates.
-        // For simplicity, we'll use a placeholder "City".
-        const city = 'City';
-        currentCity = city;
-        alert(`Location set to: ${city}`);
+        const geocoder = new google.maps.Geocoder();
+        const latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+
+        geocoder.geocode({ 'location': latlng }, (results, status) => {
+            if (status === 'OK') {
+                if (results[0]) {
+                    const city = getCityFromResults(results);
+                    currentCity = city;
+                    alert(`Location set to: ${city}`);
+                } else {
+                    alert('Location not found.');
+                }
+            } else {
+                console.error('Geocoder failed due to:', status);
+            }
+        });
+    }
+
+    function getCityFromResults(results) {
+        for (let i = 0; i < results.length; i++) {
+            for (let j = 0; j < results[i].address_components.length; j++) {
+                const types = results[i].address_components[j].types;
+                if (types.includes('locality') || types.includes('administrative_area_level_1')) {
+                    return results[i].address_components[j].long_name;
+                }
+            }
+        }
+        return 'Unknown City';
     }
 
     function uploadImage() {
@@ -76,14 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             body: formData,
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-            });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            alert(data.message);
+        })
+        .catch(error => {
+            console.error('Error uploading image:', error);
+        });
     }
 
     function handleDrop(files) {
