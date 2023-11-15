@@ -2,6 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -90,7 +92,15 @@ app.post('/uploadImage/:city', (req, res) => {
     }
 });
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+// Load SSL certificate and private key
+const privateKeyPath = './private-key.pem';
+const certificatePath = './certificate.pem';
+const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+const certificate = fs.readFileSync(certificatePath, 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+// Start the server over HTTPS
+const httpsServer = https.createServer(credentials, app);
+httpsServer.listen(port, () => {
+    console.log(`Server is running on https://localhost:${port}`);
 });
