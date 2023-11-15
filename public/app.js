@@ -117,4 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.readAsDataURL(file);
         }
     }
+	 // Function to handle dropBox click
+    window.handleDropBoxClick = function() {
+        imageInput.click();
+    };
 });
