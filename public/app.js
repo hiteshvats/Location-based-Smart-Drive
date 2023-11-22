@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     uploadBtn.addEventListener('click', () => {
         if (!currentCity) {
-            alert('Please get location first.');
+            alert('Please upload image.');
             return;
         }
         uploadImage();
@@ -18,16 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dropBox.addEventListener('dragover', (e) => {
         e.preventDefault();
-        dropBox.style.border = '2px solid #4caf50';
     });
 
     dropBox.addEventListener('dragleave', () => {
-        dropBox.style.border = '2px dashed #ccc';
     });
 
     dropBox.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropBox.style.border = '2px dashed #ccc';
         handleDrop(e.dataTransfer.files);
     });
 
