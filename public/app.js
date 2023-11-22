@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const getLocationBtn = document.getElementById('getLocationBtn');
     const imageInput = document.getElementById('imageInput');
     const uploadBtn = document.getElementById('uploadBtn');
     const dropBox = document.getElementById('dropBox');
