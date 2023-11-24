@@ -102,5 +102,5 @@ const credentials = { key: privateKey, cert: certificate };
 // Start the server over HTTPS
 const httpsServer = https.createServer(credentials, app);
 httpsServer.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on https://localhost:${port}`);
 });

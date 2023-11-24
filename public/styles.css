@@ -54,7 +54,6 @@ header {
   overflow: hidden;
   border-radius: 10px;
   transition: border 0.3s ease;
-  position: relative;
   opacity: 0.9;
 }
 
